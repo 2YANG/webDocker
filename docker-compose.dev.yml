@@ -1,0 +1,51 @@
+version: '3'
+services:
+  redis:
+    container_name: egg-redis
+    image: redis:3.2-alpine
+    command: redis-server --appendonly yes --requirepass 12345678
+    volumes:
+      - egg-redis:/data
+    networks:
+      - egg_networks
+    ports:
+      - 6379:6379
+
+  mysql:
+    container_name: egg-mysql
+    image: mysql:5.6
+    restart: always
+    environment:
+      - MYSQL_INITDB_ROOT_USERNAME=root
+      - MYSQL_INITDB_ROOT_PASSWORD=12345678
+    volumes:
+      - egg-mysql:/data/db
+    networks:
+      - egg_networks
+    ports:
+      - 3306:3306
+
+#  mongodb:
+#    container_name: egg-mongo
+#    image: mongo:3.2
+#    restart: always
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=root
+#      - MONGO_INITDB_ROOT_PASSWORD=12345678
+#      - MONGO_INITDB_DATABASE=egg_mongo
+#    volumes:
+#      - egg-mongo:/data/db
+#      - ./init.d/mongo/:/docker-entrypoint-initdb.d/
+#    networks:
+#      - egg_networks
+#    ports:
+#      - 27017:27017
+
+volumes:
+  egg-redis:
+  egg-mysql:
+#  egg-mongo:
+
+networks:
+  egg_networks:
+    driver: bridge
